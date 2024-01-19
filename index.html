@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floating Button | by Tymoteusz Nachtman</title>
+</head>
+<body style="min-height: 100vh; width: 100vw; margin: 0; padding: 0;">
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  
+  <div style="margin:2rem auto;max-width:50rem;padding:1rem;">
+    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quaerat iste repudiandae quod, earum incidunt eligendi. Tempore dicta nesciunt facilis deserunt mollitia eligendi nostrum maxime nobis veritatis, autem natus! Fugiat, earum.
+  </div>
+
+  <!-- MOBILE FIRST APPROACH -->
+  <div id="app" style="border-radius:2rem;">
+    <div class="wrapper animate pop" :class="{'open': state.isOpen}">
+
+      <span v-if="state.isOpen" class="closeBtn" @click="closePopup()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m12 13.4l2.9 2.9q.275.275.7.275t.7-.275q.275-.275.275-.7t-.275-.7L13.4 12l2.9-2.9q.275-.275.275-.7t-.275-.7q-.275-.275-.7-.275t-.7.275L12 10.6L9.1 7.7q-.275-.275-.7-.275t-.7.275q-.275.275-.275.7t.275.7l2.9 2.9l-2.9 2.9q-.275.275-.275.7t.275.7q.275.275.7.275t.7-.275zm0 8.6q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22"/></svg>
+      </span>
+      <div class="btn" :class="{'open': state.isOpen, 'animateBtn': !state.isOpen}" @click="openPopup()">
+        <svg class="icon" :class="{'animateCart': !state.isOpen}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path fill="currentColor" d="M96 216a16 16 0 1 1-16-16a16 16 0 0 1 16 16m88-16a16 16 0 1 0 16 16a16 16 0 0 0-16-16m46.44-132.75A8 8 0 0 0 224 64H48.32l-8.11-28.4A16.08 16.08 0 0 0 24.82 24H8a8 8 0 0 0 0 16h16.82L61 166.59A24.11 24.11 0 0 0 84.07 184h96.11a23.89 23.89 0 0 0 22.94-16.94l28.53-92.71a8 8 0 0 0-1.21-7.1"/></svg>
+        <span style="transition: all .3s ease;" :style="[state.isOpen ? 'width:100%;opacity:1;' : 'opacity:0;width:0;']">
+          <div v-if="state.isOpen">
+            Check out my profile
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VUE Script -->
+  <script>
+    const { createApp, ref, reactive, watch } = Vue
+    const state = reactive({
+      isOpen: false,
+      userClosed: false,
+    })
+
+    createApp({
+      setup(){
+        const togglePopout = () => {
+          state.isOpen = !state.isOpen;
+        }
+
+        const closePopup = () => {
+          state.isOpen = false;
+        }
+
+        const openPopup = () => {
+          if(!state.isOpen){
+            state.isOpen = true;
+          }else{
+            window.open("https://www.tymoteusznachtman.pl", "_blank");
+          }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+          setTimeout(openPopup, 2000);
+        });
+
+        return{
+          state,
+          togglePopout,
+          closePopup,
+          openPopup,
+        }
+      }
+    }).mount('#app')
+  </script>
+
+  <!-- Styles -->
+  <style>
+    /* app styles */
+    .wrapper{
+      position: fixed;
+      bottom: 1rem;
+      right: 1.5rem;
+      transform: translateX(0%);
+      z-index: 9;
+      transition: all .3s ease;
+    }
+    
+    .wrapper.open{
+      right: 50%;
+      transform: translateX(50%);
+      z-index:1000;
+    }
+
+    .wrapper .closeBtn{
+      position: absolute;
+      width: 1.5rem;
+      height: 1.5rem;
+      top: .3rem;
+      right: .3rem;
+      z-index: 1001;
+      cursor: pointer;
+    }
+
+    .wrapper .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+      left: 0;
+      outline: none;
+      user-select: none;
+      cursor: pointer;
+      width: 4rem;
+      height: 4rem;
+      line-height: 1.5rem;
+      text-align: center;
+      font-size: 1rem;
+      z-index: 999;
+      background: #eee;
+      color: inherit;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+      transition: all .2s ease-in-out;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+    .wrapper .btn.open {
+      border-radius: 1rem;
+      width: 80vw;
+      padding: 0.15rem 2rem;
+    }
+    .wrapper .icon{
+      width: 2rem;
+      height: 2rem;
+    }
+    .wrapper .animateBtn{
+      animation-duration: 10s;
+      animation-delay: .5s;
+      animation-name: animate-btn;
+      animation-timing-function: cubic-bezier(.26,.53,.74,1.48);
+      animation-iteration-count: infinite;
+    }
+    @keyframes animate-btn{
+      0%{transform: scale(1, 1);}
+      2%{transform: scale(1.2, 1.2);}
+      3%{transform: scale(1, 1);}
+      4%{transform: scale(1.2, 1.2);}
+      5%{transform: scale(1, 1);}
+    }
+
+    /* animations */
+    #app .animateCart{
+      animation-duration: 10s;
+      animation-delay: 1.5s;
+      animation-name: animate-cart;
+      animation-timing-function: cubic-bezier(.26,.53,.74,1.48);
+      animation-iteration-count: infinite;
+    }
+    @keyframes animate-cart{
+      0%{transform: rotateZ(0deg);}
+      2%{transform: rotateZ(0deg);}
+      4%{transform: rotateZ(15deg);}
+      5%{transform: rotateZ(0deg);}
+      6%{transform: rotateZ(-15deg);}
+      7%{transform: rotateZ(0deg);}
+      8%{transform: rotateZ(15deg);}
+      9%{transform: rotateZ(0deg);}
+      10%{transform: rotateZ(-15deg);}
+      11%{transform: rotateZ(0deg);}
+    }
+
+    .animate {
+      animation-duration: 0.75s;
+      animation-duration: .3s;
+      animation-delay: 1s;
+      animation-name: animate-fade;
+      animation-timing-function: cubic-bezier(.26,.53,.74,1.48);
+      animation-fill-mode: backwards;
+    }
+
+    /* Pop In */
+    .animate.pop {
+      animation-name: animate-pop;
+    }
+    @keyframes animate-pop {
+      0% {
+        opacity: 0;
+        transform: scale(0.5, 0.5);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1, 1);
+      }
+    }
+    
+    @media screen and (prefers-reduced-motion: reduce) {
+      .animate {
+        animation: none !important;
+      }
+    }
+
+    @media(min-width:800px){
+      #app .btn{
+        max-width: 40rem;
+      }
+      .wrapper.open{
+        right: 1.5rem;
+        transform: translateX(0%);
+      }
+    }
+  </style>
+  
+</body>
+</html>
